@@ -5,8 +5,14 @@ class ChargesController < ApplicationController
 
   def create
     # Amount in cents
-    @amount = 500
-    @item = "shirt"
+    @amount = 0
+    item = []
+    Cart.all.each do |thing|
+      @amount = @amount + (thing.product.price * thing.qty)
+      item.push(thing.product)
+    end
+    @amount = @amount * 100
+    @amount = @amount.to_i
 
     customer = Stripe::Customer.create(
       :email => params[:stripeEmail],
